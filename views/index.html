@@ -5,6 +5,8 @@
   <script>
     var token = "";
     $(document).ready(function() {
+
+      $("#main").hide();
       $("#login").submit(function(event) {
 	  event.preventDefault();
 	  var posting = $.post('/login', $("#login").serialize())
@@ -14,9 +16,18 @@
 		$.get('/configs', {"token": token})
 		.done(function(resp) {
 		  $('#main').append(resp);  
+		  $('#main').show();  
 		});
 	    });
 	});
+
+      $("#configs").submit(function(event) {
+	event.preventDefault();
+	var posting = $.post('/configs', $("#configs").serialize())
+	  .done(function(data) {
+	    $("#main").append("added");
+	    });
+	  });
     });
   </script>
 </head>
@@ -31,6 +42,14 @@
     </form>
   </div>
   <div id="main">
+    <h1>Configurations</h1>
+    <form id="configs" action="configs" method="post">
+      Name: <input type="text" name="name"/><br>
+      hostname: <input type="text" name="hostname"/><br>
+      port: <input type="text" name="port"/><br>
+      username: <input type="text" name="username"/><br>
+      <input type="submit" value="Add"/>
+    </form>
   </div>
 </body>
 </html>

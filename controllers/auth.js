@@ -8,7 +8,6 @@ module.exports = {
   login: function(req, res) {
     if(req.method == 'POST') {
       var postStr = '';
-      var loggedIn = false;
 
       req.on('data', function(data) {
 	postStr += data;
@@ -16,19 +15,13 @@ module.exports = {
 
       req.on('end', function() {
 	var postObj = qs.parse(postStr);
-
-	for(var i in users) {
-	  if(users[i].user == postObj["user"] &&
-	     users[i].pass == postObj["pass"]) {
-	    // Generate token
+	if(validate(postObj["user"], postObj["pass"])) {
 	    var token = crypto.randomBytes(32).toString('base64');
 	    sessions.push(token);
+	    console.log(sessions);
 	    res.write(token);
-	    loggedIn = true;
-	    break;
-	  }
 	}
-	if(!loggedIn) {
+	else {
 	  res.write("failure");
 	}
 	res.end();
@@ -44,3 +37,13 @@ module.exports = {
   }
 }
 
+function validate(user, pass) {
+  var valid = false;
+  for(var i in users) {
+    if(users[i].user == user && users[i].pass == pass) {
+	 valid = true;
+	 break;
+    }
+  }
+  return valid;
+}
