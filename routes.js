@@ -11,7 +11,7 @@ module.exports = {
       auth.login(req, res); 
     }
     else if(req.url.match(/^\/configs/)) {
-      configs.get(req, res);
+      configs.configs(req, res);
     }
     else {
       res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});

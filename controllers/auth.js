@@ -16,7 +16,7 @@ module.exports = {
       req.on('end', function() {
 	var postObj = qs.parse(postStr);
 	if(validate(postObj["user"], postObj["pass"])) {
-	    var token = crypto.randomBytes(32).toString('base64');
+	    var token = crypto.randomBytes(32).toString('hex');
 	    sessions.push(token);
 	    console.log(sessions);
 	    res.write(token);

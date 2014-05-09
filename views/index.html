@@ -23,11 +23,25 @@
 
       $("#configs").submit(function(event) {
 	event.preventDefault();
-	var posting = $.post('/configs', $("#configs").serialize())
+	var posting = $.post('/configs', $("#configs").serialize() + "&token=" + token)
 	  .done(function(data) {
-	    $("#main").append("added");
+	    $("#main").append(data);
 	    });
 	  });
+
+      $("#deleteconfigs").submit(function(event) {
+	event.preventDefault();
+	var u = '/configs/' + $("#deleteconfigs").find("input[type=text]")[0].value;
+	$.ajax({
+	    url: u,
+	    type: 'DELETE',
+	    data: {"token": token},
+	    success: function(result) {
+		// Do something with the 
+	      $('#main').append(result);
+	    }
+	});
+      });
     });
   </script>
 </head>
@@ -49,6 +63,10 @@
       port: <input type="text" name="port"/><br>
       username: <input type="text" name="username"/><br>
       <input type="submit" value="Add"/>
+    </form>
+    <form id="deleteconfigs" action="configs" method="delete">
+      Enter config name to delete: <input type="text" name="name"/>
+      <input type="submit" value="Delete"/>
     </form>
   </div>
 </body>
