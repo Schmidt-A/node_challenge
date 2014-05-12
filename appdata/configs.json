@@ -1,8 +1,28 @@
 {
-    "configurations": [
+    "conf1": [
         {
-            "name": "aaa",
-            "hostname": "fghfh",
+            "name": "host1-1",
+            "hostname": "nessus-ntp.lab.com",
+            "port": 1241,
+            "username": "toto"
+        },
+        {
+            "name": "host2-1",
+            "hostname": "nessus-xml.lab.com",
+            "port": 3384,
+            "username": "admin"
+        },
+        {
+            "name": "host3-1",
+            "hostname": "asjk",
+            "port": "doghoa",
+            "username": "oasidj"
+        }
+    ],
+    "conf2": [
+        {
+            "name": "sdf",
+            "hostname": "dfgdg",
             "port": "sdfsdf",
             "username": "dfgdg"
         }

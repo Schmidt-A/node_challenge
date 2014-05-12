@@ -10,7 +10,10 @@ module.exports = {
     configurations = require('../appdata/configs.json');
     var urlParts = url.parse(req.url, true);
     var query = urlParts.query;
-    var hrefParts = urlParts.href.split("/");
+    var hrefParts = urlParts.pathname.split("/");
+    hrefParts.shift();
+    var uri = parseURI(hrefParts);
+    console.log(hrefParts);
 
     parseRequest(query, req, function(token, data) {
       console.log(token);
@@ -18,13 +21,13 @@ module.exports = {
       {
 	console.log("authenticated");
 	if(req.method == 'GET') {
-	  get(res);
+	  get(res, uri);
 	}
 	else if(req.method == 'POST') {
-	  post(res, data);
+	  post(res, data, uri);
 	}
 	else if(req.method == 'DELETE') {
-	  del(hrefParts, res);
+	  del(res, uri);
 	}
       }
       else
@@ -63,30 +66,66 @@ function updateFile()
 		JSON.stringify(configurations, null, 4));
 }
 
-function get(res) {
-  res.write(JSON.stringify(configurations));
-}
-
-function post(res, data) {
-  configurations["configurations"].push(data);
-  updateFile()
-  res.write(JSON.stringify(configurations));
-}
-
-function del(hrefParts, res) {
-  var confs = configurations["configurations"];
-  console.log(hrefParts)
-  console.log(configurations);
-
-  if(hrefParts.length > 2) { // Deleting one el
-    var toDelete = hrefParts[2];
-    for(var i in confs) {
-      if(confs[i].name == toDelete) {
-	confs = confs.splice(confs.indexOf(i), 1);
-	configurations["configurations"] = confs;
-	updateFile();
-	break;
-      }
+function get(res, uri) {
+  var result = '';
+  if(uri.list) {
+    if(configurations.hasOwnProperty(uri.list)) {
+      result = JSON.stringify(configurations[uri.list]);
     }
   }
+  else {
+    result = JSON.stringify(configurations);
+  }
+  res.write(result);
+}
+
+function post(res, data, uri) {
+  if(uri.list)
+  {
+    if(!configurations.hasOwnProperty(uri.list)) {
+      configurations[uri.list] = [];
+    }
+    configurations[uri.list].push(data);
+    updateFile();
+  }
+  res.write("Added: " + JSON.stringify(data));
+}
+
+function del(res, uri) {
+
+  if(uri.list) {
+
+    if(uri.name) {
+      for(var i in configurations[uri.list]) {
+	if(configurations[uri.list][i].name == uri.name) {
+	  configurations[uri.list] = configurations[uri.list]
+	    .splice(configurations[uri.list].indexOf(i), 1);
+	  updateFile();
+	  res.write("Deleted " + uri.name + " from " + uri.list + " configuration.");
+	  break;
+	}
+      }
+    }
+    else {
+      delete configurations[uri.list];
+      updateFile();
+      res.write("Deleted " + uri.list + " configuration.");
+    }
+  }
+}
+
+function parseURI(hrefParts) {
+  var uri = {};
+
+  if(hrefParts.length > 0) {
+    uri.method = hrefParts[0];
+  }
+  if(hrefParts.length > 1) {
+    uri.list = hrefParts[1];
+  }
+  if(hrefParts.length > 2) {
+    uri.name = hrefParts[2];
+  }
+
+  return uri;
 }
