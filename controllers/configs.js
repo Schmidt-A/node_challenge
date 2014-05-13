@@ -22,12 +22,7 @@ module.exports = {
       {
 	console.log("authenticated");
 	if(req.method == 'GET') {
-	  if(query.only100k) {
-	    get(res, uri, true);
-	  }
-	  else {
-	    get(res, uri, false);
-	  }
+	    get(res, uri, query);
 	}
 	else if(req.method == 'POST') {
 	  post(res, data, uri);
@@ -72,13 +67,13 @@ function updateFile()
 		JSON.stringify(configurations, null, 4));
 }
 
-function get(res, uri, only100k) {
-  var result = '';
+function get(res, uri, query) {
+  var result = {};
 
-  if(only100k) {
+  if(query.only100k) {
     for(var conf in configurations) {
       if(configurations[conf].length > 2) {
-	result += JSON.stringify(conf);
+	result[conf] = configurations[conf];
       }
     }
   }
@@ -86,17 +81,24 @@ function get(res, uri, only100k) {
   else {
     if(uri.list) {
       if(configurations.hasOwnProperty(uri.list)) {
-	var args = ['name', 'username'];
-	var sorted = configurations[uri.list].sort(flexsort.sort_by.apply(this, args));
-	//result = JSON.stringify(configurations[uri.list]);
-	result = JSON.stringify(sorted);
+	result[uri.list] = configurations[uri.list];
       }
+      // else return 404
     }
     else {
-      result = JSON.stringify(configurations);
+      result = configurations;
     }
   }
 
+  if(query.sortArgs) {
+    for(key in result) {
+      console.log(query);
+      result[key] = result[key]
+	.sort(flexsort.sort_by.apply(this, (query.sortArgs).split(',')));
+    }
+  }
+
+  result = JSON.stringify(result, null, 4);
   res.write(result);
 }
 

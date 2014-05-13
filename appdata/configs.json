@@ -21,8 +21,26 @@
     ],
     "conf2": [
         {
+            "name": "aaaa",
+            "hostname": "sdfs",
+            "port": "sdfsfdfgdg",
+            "username": "dfgdg"
+        },
+        {
+            "port": "fdgg",
+            "username": "asd",
+            "name": "asdad",
+            "hostname": "sdfsf"
+        },
+        {
             "name": "asdad",
             "hostname": "sdfsf",
+            "port": "sdfsfdfgdg",
+            "username": "dfgdg"
+        },
+        {
+            "name": "aaaaw",
+            "hostname": "sdfs",
             "port": "sdfsfdfgdg",
             "username": "dfgdg"
         }

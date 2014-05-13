@@ -1,9 +1,37 @@
 <html>
 <head>
+  <style>
+    p {
+      font-size: 14px;
+      border: 1px solid;
+      width: 80px;
+      display: inline;
+    }
+    .default {
+      background: white;
+    }
+    .selected {
+      background: grey;
+    }
+
+  </style>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
   <script>
     var token = "";
+    var sortArgs = [];
+
+    function updateSortArgs(param) {
+      var i = sortArgs.indexOf(param);
+      if(i > -1) {
+	sortArgs.splice(i, 1);
+      }
+      else {
+	sortArgs.push(param);
+      }
+    }
+
     $(document).ready(function() {
 
       $("#main").hide();
@@ -59,9 +87,26 @@
 	  params["only100k"] = "true";
 	}
 
+	if(sortArgs.length > 0) {
+	  params["sortArgs"] = sortArgs.toString();
+	}
+
 	$.get(u, params).done(function(resp) {
 	  $("#server_msgs").html(resp);
 	});
+      });
+
+      $('p').click(function() {
+	if($(this).hasClass('default')) {
+	  $(this).removeClass('default');
+	  $(this).addClass('selected');
+	}
+	else if($(this).hasClass('selected')) {
+	  $(this).removeClass('selected');
+	  $(this).addClass('default');
+	}
+	updateSortArgs($(this).text());
+	$('#sort_txt').val(sortArgs.toString());
       });
     });
   </script>
@@ -76,25 +121,48 @@
       <input type="submit" value="Login"/>
     </form>
   </div>
+
   <div id="main">
     <h1>Configurations</h1>
-    configuration: <input type="text" id="config_array"/>
-    <form id="configs" action="configs" method="post">
-      Name: <input type="text" name="name"/><br>
-      hostname: <input type="text" name="hostname"/><br>
-      port: <input type="text" name="port"/><br>
-      username: <input type="text" name="username"/><br>
-      <input type="submit" value="Add"/>
-    </form>
+    <b> Working Configuration: </b>(set this for add/delete) <input type="text" id="config_array"/></h2>
+    <table>
+      <form id="configs" action="configs" method="post">
+      <tr>
+	<td>Name:</td><td><input type="text" name="name"/></td>
+      </tr>
+      <tr>
+	<td>hostname:</td><td><input type="text" name="hostname"/></td>
+      </tr>
+      <tr>
+	<td>port:</td><td><input type="text" name="port"/></td>
+      </tr>
+      <tr>
+	<td>username:</td><td><input type="text" name="username"/></td>
+      </tr>
+      <tr>
+	<td><input type="submit" value="Add"/></td>
+      </tr>
+      </form>
+    </table>
+    <br>
+
     <form id="deleteconfigs" action="configs" method="delete">
       Enter config name to delete: <input type="text" name="name"/>
       <input type="submit" value="Delete"/>
     </form>
+
     uri to get: <input id="get_uri" type="text" name="geturi"/>
     <button id="get_btn">Get</button>
     <input type="checkbox" id="only_100k" value="true"/>Show only configurations with at least 100,000 elements
+    <br>
+    sort by: <input id="sort_txt", type="text"/>
+    <p class='default'>name</p>
+    <p class='default'>hostname</p>
+    <p class='default'>port</p>
+    <p class='default'>username</p>
+
+    <h3>Message from server:</h3>
+    <pre><div id="server_msgs" style="border: 1px solid; height: 400px; overflow: auto;"></div></pre>
   </div>
-  <h3>Message from server:</h3>
-  <div id="server_msgs"></div>
 </body>
 </html>
