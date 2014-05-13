@@ -3,6 +3,7 @@ var qs = require('querystring');
 var fs = require('fs');
 
 var auth = require('./auth');
+var flexsort = require('../utils/flexsort');
 var configurations = require('../appdata/configs.json');
 
 module.exports = { 
@@ -81,16 +82,21 @@ function get(res, uri, only100k) {
       }
     }
   }
+
   else {
     if(uri.list) {
       if(configurations.hasOwnProperty(uri.list)) {
-	result = JSON.stringify(configurations[uri.list]);
+	var args = ['name', 'username'];
+	var sorted = configurations[uri.list].sort(flexsort.sort_by.apply(this, args));
+	//result = JSON.stringify(configurations[uri.list]);
+	result = JSON.stringify(sorted);
       }
     }
     else {
       result = JSON.stringify(configurations);
     }
   }
+
   res.write(result);
 }
 
