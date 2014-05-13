@@ -7,60 +7,62 @@
     $(document).ready(function() {
 
       $("#main").hide();
+
       $("#login").submit(function(event) {
-	  event.preventDefault();
-	  var posting = $.post('/login', $("#login").serialize())
-	    .done(function(data) {
-		token = data;
-		$("#login_div").hide();
-		$.get('/configs', {"token": token})
-		.done(function(resp) {
-		  //$('#main').append(resp);  
-		  $('#main').show();  
-		});
-	    });
-	});
-
-      $("#configs").submit(function(event) {
 	event.preventDefault();
-	var u = '/configs/' + $('#config_array').val();
-	var posting = $.post(u, $("#configs").serialize() + "&token=" + token)
-	  .done(function(data) {
-	    //$("#main").append(data);
-	      $("#server_msgs").html(data);
-	    });
-	  });
+	var u = '/login';
+	var params = $('#login').serialize();
 
-      $("#deleteconfigs").submit(function(event) {
-	event.preventDefault();
-	toDelete = $("#deleteconfigs").find("input[type=text]")[0].value;
-
-	if(toDelete) {
-	  var u = '/configs/' + $('#config_array').val() + "/" + toDelete 
-	}
-	else {
-	  var u = '/configs/' + $("#config_array").val();
-	}
-	$.ajax({
-	    url: u,
-	    type: 'DELETE',
-	    data: {"token": token},
-	    success: function(result) {
-	      $("#server_msgs").html(result);
-	      //$('#main').append(result);
-	    }
+	var posting = $.post(u, params).done(function(data) {
+	  token = data;
+	  $("#login_div").hide();
+	  $('#main').show();  
 	});
       });
 
-	$("#get_btn").click(function() {
-	  var u = '/configs/' + $("#get_uri").val();
-	  console.log("in click handler");
-	  $.get(u, {"token": token})
-	  .done(function(resp) {
-	    //$("#main").append(resp);
-	    $("#server_msgs").html(resp);
-	    });
-	  });
+      // Add
+      $("#configs").submit(function(event) {
+	event.preventDefault();
+	var u = '/configs/' + $('#config_array').val();
+	var params = $("#configs").serialize() + "&token=" + token;
+
+	var posting = $.post(u, params).done(function(data) {
+	      $("#server_msgs").html(data);
+	});
+      });
+
+      $("#deleteconfigs").submit(function(event) {
+	event.preventDefault();
+	var u = '/configs/' + $("#config_array").val();
+	var params = {"token": token};
+	var toDelete = $("#deleteconfigs").find("input[type=text]")[0].value;
+
+	if(toDelete) {
+	  u += "/" + toDelete 
+	}
+
+	$.ajax({
+	  url: u,
+	  type: 'DELETE',
+	  data: params,
+	  success: function(result) {
+	    $("#server_msgs").html(result);
+	  }
+	});
+      });
+
+      $("#get_btn").click(function() {
+	var u = '/configs/' + $("#get_uri").val();
+	var params = {"token": token};
+
+	if($("#only_100k").prop('checked')) {
+	  params["only100k"] = "true";
+	}
+
+	$.get(u, params).done(function(resp) {
+	  $("#server_msgs").html(resp);
+	});
+      });
     });
   </script>
 </head>
@@ -90,6 +92,7 @@
     </form>
     uri to get: <input id="get_uri" type="text" name="geturi"/>
     <button id="get_btn">Get</button>
+    <input type="checkbox" id="only_100k" value="true"/>Show only configurations with at least 100,000 elements
   </div>
   <h3>Message from server:</h3>
   <div id="server_msgs"></div>

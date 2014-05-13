@@ -21,7 +21,12 @@ module.exports = {
       {
 	console.log("authenticated");
 	if(req.method == 'GET') {
-	  get(res, uri);
+	  if(query.only100k) {
+	    get(res, uri, true);
+	  }
+	  else {
+	    get(res, uri, false);
+	  }
 	}
 	else if(req.method == 'POST') {
 	  post(res, data, uri);
@@ -66,15 +71,25 @@ function updateFile()
 		JSON.stringify(configurations, null, 4));
 }
 
-function get(res, uri) {
+function get(res, uri, only100k) {
   var result = '';
-  if(uri.list) {
-    if(configurations.hasOwnProperty(uri.list)) {
-      result = JSON.stringify(configurations[uri.list]);
+
+  if(only100k) {
+    for(var conf in configurations) {
+      if(configurations[conf].length > 2) {
+	result += JSON.stringify(conf);
+      }
     }
   }
   else {
-    result = JSON.stringify(configurations);
+    if(uri.list) {
+      if(configurations.hasOwnProperty(uri.list)) {
+	result = JSON.stringify(configurations[uri.list]);
+      }
+    }
+    else {
+      result = JSON.stringify(configurations);
+    }
   }
   res.write(result);
 }
