@@ -117,12 +117,10 @@ function post(res, data, uri) {
 function del(res, uri) {
 
   if(uri.list) {
-
     if(uri.name) {
       for(var i in configurations[uri.list]) {
 	if(configurations[uri.list][i].name == uri.name) {
-	  configurations[uri.list] = configurations[uri.list]
-	    .splice(configurations[uri.list].indexOf(i), 1);
+	  configurations[uri.list].splice(i, 1);
 	  updateFile();
 	  res.write("Deleted " + uri.name + " from " + uri.list + " configuration.");
 	  break;

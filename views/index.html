@@ -16,10 +16,10 @@
 
   </style>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js'></script>
 
   <script>
-    var token = "";
+    var token = '';
     var sortArgs = [];
 
     function updateSortArgs(param) {
@@ -34,39 +34,40 @@
 
     $(document).ready(function() {
 
-      $("#main").hide();
+      $('#main').hide();
+      $('#sort_txt').val('');
 
-      $("#login").submit(function(event) {
+      $('#login').submit(function(event) {
 	event.preventDefault();
 	var u = '/login';
 	var params = $('#login').serialize();
 
 	var posting = $.post(u, params).done(function(data) {
 	  token = data;
-	  $("#login_div").hide();
+	  $('#login_div').hide();
 	  $('#main').show();  
 	});
       });
 
       // Add
-      $("#configs").submit(function(event) {
+      $('#configs').submit(function(event) {
 	event.preventDefault();
 	var u = '/configs/' + $('#config_array').val();
-	var params = $("#configs").serialize() + "&token=" + token;
+	var params = $('#configs').serialize() + '&token=' + token;
 
 	var posting = $.post(u, params).done(function(data) {
-	      $("#server_msgs").html(data);
+	      $('#server_msgs').html(data);
 	});
       });
 
-      $("#deleteconfigs").submit(function(event) {
+      $('#deleteconfigs').submit(function(event) {
 	event.preventDefault();
-	var u = '/configs/' + $("#config_array").val();
-	var params = {"token": token};
-	var toDelete = $("#deleteconfigs").find("input[type=text]")[0].value;
+	var u = '/configs/' + $('#config_array').val();
+	var params = {'token': token};
+	var toDelete = $('#deleteconfigs').find('input[type=text]')[0].value;
 
 	if(toDelete) {
-	  u += "/" + toDelete 
+	  u += '/' + toDelete 
 	}
 
 	$.ajax({
@@ -74,25 +75,25 @@
 	  type: 'DELETE',
 	  data: params,
 	  success: function(result) {
-	    $("#server_msgs").html(result);
+	    $('#server_msgs').html(result);
 	  }
 	});
       });
 
-      $("#get_btn").click(function() {
-	var u = '/configs/' + $("#get_uri").val();
-	var params = {"token": token};
+      $('#get_btn').click(function() {
+	var u = '/configs/' + $('#get_uri').val();
+	var params = {'token': token};
 
-	if($("#only_100k").prop('checked')) {
-	  params["only100k"] = "true";
+	if($('#only_100k').prop('checked')) {
+	  params['only100k'] = 'true';
 	}
 
 	if(sortArgs.length > 0) {
-	  params["sortArgs"] = sortArgs.toString();
+	  params['sortArgs'] = sortArgs.toString();
 	}
 
 	$.get(u, params).done(function(resp) {
-	  $("#server_msgs").html(resp);
+	  $('#server_msgs').html(resp);
 	});
       });
 
@@ -113,56 +114,56 @@
 </head>
 
 <body>
-  <div id="login_div">
+  <div id='login_div'>
     <h1>Login</h1>
-    <form id="login" action="login" method="post">
-      User: <input type="text" name="user"/>
-      Password: <input type="password" name="pass"/>
-      <input type="submit" value="Login"/>
+    <form id='login' action='login' method='post'>
+      User: <input type='text' name='user'/>
+      Password: <input type='password' name='pass'/>
+      <input type='submit' value='Login'/>
     </form>
   </div>
 
-  <div id="main">
+  <div id='main'>
     <h1>Configurations</h1>
-    <b> Working Configuration: </b>(set this for add/delete) <input type="text" id="config_array"/></h2>
+    <b> Working Configuration: </b>(set this for add/delete) <input type='text' id='config_array'/></h2>
     <table>
-      <form id="configs" action="configs" method="post">
+      <form id='configs' action='configs' method='post'>
       <tr>
-	<td>Name:</td><td><input type="text" name="name"/></td>
+	<td>Name:</td><td><input type='text' name='name'/></td>
       </tr>
       <tr>
-	<td>hostname:</td><td><input type="text" name="hostname"/></td>
+	<td>hostname:</td><td><input type='text' name='hostname'/></td>
       </tr>
       <tr>
-	<td>port:</td><td><input type="text" name="port"/></td>
+	<td>port:</td><td><input type='text' name='port'/></td>
       </tr>
       <tr>
-	<td>username:</td><td><input type="text" name="username"/></td>
+	<td>username:</td><td><input type='text' name='username'/></td>
       </tr>
       <tr>
-	<td><input type="submit" value="Add"/></td>
+	<td><input type='submit' value='Add'/></td>
       </tr>
       </form>
     </table>
     <br>
 
-    <form id="deleteconfigs" action="configs" method="delete">
-      Enter config name to delete: <input type="text" name="name"/>
-      <input type="submit" value="Delete"/>
+    <form id='deleteconfigs' action='configs' method='delete'>
+      Enter config name to delete: <input type='text' name='name'/>
+      <input type='submit' value='Delete'/>
     </form>
 
-    uri to get: <input id="get_uri" type="text" name="geturi"/>
-    <button id="get_btn">Get</button>
-    <input type="checkbox" id="only_100k" value="true"/>Show only configurations with at least 100,000 elements
+    uri to get: <input id='get_uri' type='text' name='geturi'/>
+    <button id='get_btn'>Get</button>
+    <input type='checkbox' id='only_100k' value='true'/>Show only configurations with at least 100,000 elements
     <br>
-    sort by: <input id="sort_txt", type="text"/>
+    sort by: <input id='sort_txt', type='text' disabled='disabled'/>
     <p class='default'>name</p>
     <p class='default'>hostname</p>
     <p class='default'>port</p>
     <p class='default'>username</p>
 
     <h3>Message from server:</h3>
-    <pre><div id="server_msgs" style="border: 1px solid; height: 400px; overflow: auto;"></div></pre>
+    <pre><div id='server_msgs' style='border: 1px solid; height: 400px; overflow: auto;'></div></pre>
   </div>
 </body>
 </html>
