@@ -1,6 +1,12 @@
-[
-	{
-		"user": "test",
-		"pass": "1"
-	}
-]
+{
+  "test": {
+    "username": "test",
+    "hash": "LAZ5MeiN5aFKUQhZNI8EGDH5JltbKMuEWeNn2pQlkNOdD6ZHiYGVsNKNQeqnTC1+zdqugSgxRDTlygmxikjzTg==",
+    "salt": "L1ER3P2WcxjPzI++Q7qwIUuyAnB+MNoyQ1+oLDYZ9otvM9J1gA0aEI42agHAoVTRpXxx4UAA1CLbyXuLHUiLpmORwEuJzeFlY43BvWFO8ZtMtxzFS5QJhbLuOZNSBdMefiunQFxix9wUbI6TlYRHUdq+1eJETT8f4y42+mn3vAc="
+  },
+  "u": {
+    "username": "u",
+    "hash": "jfLptDso+jl+01KAyqXxfJRmgvQr2Zn1d1tlC8Owd8RxhlvnoVYUG87O9u1nMhrNMSvZrwBEnfbBrTCRa8ndog==",
+    "salt": "gI2unAd54t8ktuOtoFOQNAK2Lx9UAwklkvQX7PvFVPUWDaYcMvSG/bno83fxc9ACjlo4tKtNQj72BaK6ZrAvZvyOPcP4gfsZ4oUWKNo6/hK+PslLDywNR1y7wk2Ona189l5GdZNW4EMDVOhPJNUVmF9iH7A9T7SX0CjhwyOsAks="
+  }
+}

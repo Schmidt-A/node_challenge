@@ -2,13 +2,13 @@ var url = require('url');
 var fs = require('fs');
 var url = require('url');
 
-var auth = require('./controllers/auth');
+var login = require('./controllers/login');
 var configs = require('./controllers/configs');
 
 module.exports = {
   listener: function(req, res) {
     if(req.url == '/login') {
-      auth.login(req, res); 
+      login.login(req, res); 
     }
     else if(req.url.match(/^\/configs/)) {
       configs.configs(req, res);

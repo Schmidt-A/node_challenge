@@ -2,7 +2,7 @@ var url = require('url');
 var qs = require('querystring');
 var fs = require('fs');
 
-var auth = require('./auth');
+var auth = require('../utils/auth');
 var flexsort = require('../utils/flexsort');
 var configurations = require('../appdata/configs.json');
 
