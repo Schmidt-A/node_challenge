@@ -15,6 +15,10 @@ var login = function(req, res) {
     req.on('end', function() {
       var postObj = qs.parse(postStr);
       var result = auth.attemptLogin(postObj["user"], postObj["pass"]);
+      
+      if(result == 'failure') {
+	res.writeHead(401);
+      }
       res.write(result);
       res.end();
     });

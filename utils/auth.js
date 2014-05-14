@@ -85,8 +85,9 @@ var attemptLogin = function(name, password) {
 };
 
 var authenticated = function(token) {                                              
+  console.log(sessions);
   for(entry in sessions) {
-    if(sessions.entry == token) {
+    if(sessions[entry] == token) {
       return true;                                                              
     }
   }

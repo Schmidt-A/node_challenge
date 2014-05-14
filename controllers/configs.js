@@ -16,11 +16,11 @@ var configs = function(req, res) {
 
   hrefParts.shift();
   uri = parseURI(hrefParts);
+  console.log(global.logFile);
 
   parseRequest(query, req, function(token, data) {
     if(auth.authenticated(token))
     {
-      console.log("authenticated");
       if(req.method == 'GET') {
 	  get(res, uri, query);
       } else if(req.method == 'POST') {
@@ -30,7 +30,8 @@ var configs = function(req, res) {
       }
     } else {
       console.log("NA");
-      res.write("Not authenticated");
+      res.writeHead(401);
+      res.write("401: Unauthorized request");
     }
     res.end();
   });
@@ -73,8 +74,11 @@ var get = function(res, uri, query) {
     if(uri.list) {
       if(configurations.hasOwnProperty(uri.list)) {
 	result[uri.list] = configurations[uri.list];
+      } else {
+	res.writeHead(404);
+	res.write("404: Not found");
+	return;
       }
-      // else return 404
     } else {
       result = configurations;
     }
@@ -82,7 +86,6 @@ var get = function(res, uri, query) {
 
   if(query.sortArgs) {
     for(key in result) {
-      console.log(query);
       result[key] = result[key]
 	.sort(flexsort.sort_by.apply(this, (query.sortArgs).split(',')));
     }
@@ -115,11 +118,15 @@ var post = function(res, uri, data) {
     }
 
     updateFile();
+    res.write("Added: " + JSON.stringify(data));
+  } else {
+    res.writeHead(404);
+    res.write("404: Not found");
   }
-  res.write("Added: " + JSON.stringify(data));
 }
 
 var del = function(res, uri) {
+  var deleted = false;
 
   if(uri.list) {
     if(uri.name) {
@@ -128,6 +135,7 @@ var del = function(res, uri) {
 	  configurations[uri.list].splice(i, 1);
 	  updateFile();
 	  res.write("Deleted " + uri.name + " from " + uri.list + " configuration.");
+	  deleted = true;
 	  break;
 	}
       }
@@ -135,7 +143,13 @@ var del = function(res, uri) {
       delete configurations[uri.list];
       updateFile();
       res.write("Deleted " + uri.list + " configuration.");
+      deleted = true;
     }
+  }
+
+  if(!deleted) {
+    res.writeHead(404);
+    res.write("404: Not found");
   }
 }
 

@@ -32,6 +32,15 @@
       }
     }
 
+    var statusCodeHandlers = {
+      401: function() {
+	$('#server_msgs').html("401: Unauthorized request")	
+      },
+      404: function() {
+	$('#server_msgs').html("404: Not found")	
+      }
+    }
+
     $(document).ready(function() {
 
       $('#main').hide();
@@ -42,10 +51,20 @@
 	var u = '/login';
 	var params = $('#login').serialize();
 
-	var posting = $.post(u, params).done(function(data) {
-	  token = data;
-	  $('#login_div').hide();
-	  $('#main').show();  
+	$.ajax({
+	  url: u,
+	  type: 'POST',
+	  data: params,
+	  statusCode: {
+	    401: function() {
+	      alert("401: Failed login attempt");
+	    }
+	  },
+	  success: function(result) {
+	    token = result;
+	    $('#login_div').hide();
+	    $('#main').show();  
+	  }
 	});
       });
 
@@ -55,8 +74,14 @@
 	var u = '/configs/' + $('#config_array').val();
 	var params = $('#configs').serialize() + '&token=' + token;
 
-	var posting = $.post(u, params).done(function(data) {
-	      $('#server_msgs').html(data);
+	$.ajax({
+	  url: u,
+	  type: 'POST',
+	  data: params,
+	  statusCode: statusCodeHandlers, 
+	  success: function(result) {
+	    $('#server_msgs').html(result);
+	  }
 	});
       });
 
@@ -74,6 +99,7 @@
 	  url: u,
 	  type: 'DELETE',
 	  data: params,
+	  statusCode: statusCodeHandlers,
 	  success: function(result) {
 	    $('#server_msgs').html(result);
 	  }
@@ -92,10 +118,24 @@
 	  params['sortArgs'] = sortArgs.toString();
 	}
 
-	$.get(u, params).done(function(resp) {
-	  $('#server_msgs').html(resp);
+	$.ajax({
+	  url: u,
+	  type: 'GET',
+	  data: params,
+	  statusCode: statusCodeHandlers,
+	  success: function(result) {
+	    $('#server_msgs').html(result);
+	  }
 	});
       });
+
+      $('#logout').click(function() {
+	var u = '/configs';
+	var params = {
+	  'token': token,
+	  'logout': 'true'
+	};
+      )}
 
       $('p').click(function() {
 	if($(this).hasClass('default')) {
@@ -160,8 +200,9 @@
     <p class='default'>name</p>
     <p class='default'>hostname</p>
     <p class='default'>port</p>
-    <p class='default'>username</p>
+    <p class='default'>username</p></br>
 
+    <button id='logout'>Logout</button>
     <h3>Message from server:</h3>
     <pre><div id='server_msgs' style='border: 1px solid; height: 400px; overflow: auto;'></div></pre>
   </div>
