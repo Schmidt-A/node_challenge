@@ -15,14 +15,16 @@ var hash = function(password, salt) {
 
 var save_user = function(entry) {
   users = require(usersFile);
-  console.log('save entry: ' + JSON.stringify(entry));
   users[entry.username] = entry;
+  console.log('save entry: ' + JSON.stringify(entry));
+
   fs.writeFile(usersFile, JSON.stringify(users, null, 2), function(err) {
     if(err) {
       console.log(err);
       return false;
     }
   });
+
   return true;
 };
 
@@ -34,8 +36,10 @@ var addUser = function(name, password) {
     console.log('randomBytes() error: ' + ex); 
     return false;
   }
+
   hashtxt = hash(password, salt);
   console.log('adduser: ' + name + ' ' + hashtxt);
+
   return save_user({username: name, hash: hashtxt, salt: salt});
 };
 
@@ -43,6 +47,7 @@ var validateLogin = function(name, password) {
   var authenticated = false;
   var users = require(usersFile);
   var user;
+
   if (users.hasOwnProperty(name)) {
     user = users[name]
     attempt = hash(password, user['salt']);
@@ -50,6 +55,7 @@ var validateLogin = function(name, password) {
       authenticated = true;
     }
   }
+
   return authenticated;
 };
 
@@ -68,6 +74,14 @@ var attemptLogin = function(name, password) {
   return result;
 };
 
+var authenticated = function(token) {                                              
+  if(sessions.indexOf(token) > -1) {                                          
+    return true;                                                              
+  }
+
+  return false;                                                               
+}
 
 exports.addUser = addUser;
 exports.attemptLogin = attemptLogin;
+exports.authenticated = authenticated;

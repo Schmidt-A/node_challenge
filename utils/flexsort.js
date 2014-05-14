@@ -13,11 +13,11 @@ module.exports = {
       if (typeof field === 'string') {
 	name = field;
 	cmp = default_cmp;
-      }
-      else {
+      } else {
 	name = field.name;
 	cmp = getCmpFunc(field.primer, field.reverse);
       }
+
       fields.push({
 	name: name,
 	cmp: cmp
@@ -27,6 +27,7 @@ module.exports = {
     // final comparison function
     return function(A, B) {
       var a, b, name, result;
+
       for (var i = 0; i < n_fields; i++) {
 	result = 0;
 	field = fields[i];
@@ -62,22 +63,3 @@ function getCmpFunc(primer, reverse) {
   }
   return cmp;
 }
-
-
-    /*
-    You need to build up a list of fields to sort by like this:
-     (the fields can just be the field name like username below, or a {name: 'filedname', reverse: true})
-     
-     Don't worry about the primer option, I don't think we need it.
-    */
-      
-    //sort_fields = [{name:'name', reverse: false}, {name:'port', reverse: false}, 'username']
-    
-    // you can see that it works by reversing some of them.
-    //result = data.configurations.sort(sort_by('username', 'port']));
-     
-    // use array expanded into arguments
-    //args =  [{name: 'name', primer: function(x){return x.toUpperCase();} }, 'username', 'port'];
-    //result = data.configurations.sort(sort_by.apply(this, args));
-    
-    //$('div').append(JSON.stringify(result, null, '<br />'));

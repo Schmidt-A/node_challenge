@@ -6,47 +6,40 @@ var auth = require('../utils/auth');
 var flexsort = require('../utils/flexsort');
 var configurations = require('../appdata/configs.json');
 
-module.exports = { 
-  configs: function(req, res) {
-    configurations = require('../appdata/configs.json');
-    var urlParts = url.parse(req.url, true);
-    var query = urlParts.query;
-    var hrefParts = urlParts.pathname.split("/");
-    hrefParts.shift();
-    var uri = parseURI(hrefParts);
-    console.log(hrefParts);
+var configs = function(req, res) {
+  configurations = require('../appdata/configs.json');
 
-    parseRequest(query, req, function(token, data) {
-      console.log(token);
-      if(auth.authenticated(token))
-      {
-	console.log("authenticated");
-	if(req.method == 'GET') {
-	    get(res, uri, query);
-	}
-	else if(req.method == 'POST') {
-	  post(res, data, uri);
-	}
-	else if(req.method == 'DELETE') {
-	  del(res, uri);
-	}
+  var uri;
+  var urlParts = url.parse(req.url, true);
+  var query = urlParts.query;
+  var hrefParts = urlParts.pathname.split("/");
+
+  hrefParts.shift();
+  uri = parseURI(hrefParts);
+
+  parseRequest(query, req, function(token, data) {
+    if(auth.authenticated(token))
+    {
+      console.log("authenticated");
+      if(req.method == 'GET') {
+	  get(res, uri, query);
+      } else if(req.method == 'POST') {
+	post(res, uri, data);
+      } else if(req.method == 'DELETE') {
+	del(res, uri);
       }
-      else
-      {
-	console.log("NA");
-	res.write("Not authenticated");
-      }
-      res.end();
-      console.log("------------------------------");
-    });
-  }
+    } else {
+      console.log("NA");
+      res.write("Not authenticated");
+    }
+    res.end();
+  });
 }
 
-function parseRequest(query, req, fn) {
+var parseRequest = function(query, req, fn) {
   if(req.method == 'GET') {
     fn(query.token, null);
-  }
-  else {
+  } else {
     var formData = '';
     req.on('data', function(data) {
       formData += data;
@@ -61,13 +54,13 @@ function parseRequest(query, req, fn) {
   }
 }
 
-function updateFile()
+var updateFile = function()
 {
   fs.writeFile('./appdata/configs.json',
 		JSON.stringify(configurations, null, 4));
 }
 
-function get(res, uri, query) {
+var get = function(res, uri, query) {
   var result = {};
 
   if(query.only100k) {
@@ -76,16 +69,13 @@ function get(res, uri, query) {
 	result[conf] = configurations[conf];
       }
     }
-  }
-
-  else {
+  } else {
     if(uri.list) {
       if(configurations.hasOwnProperty(uri.list)) {
 	result[uri.list] = configurations[uri.list];
       }
       // else return 404
-    }
-    else {
+    } else {
       result = configurations;
     }
   }
@@ -102,19 +92,34 @@ function get(res, uri, query) {
   res.write(result);
 }
 
-function post(res, data, uri) {
+var post = function(res, uri, data) {
+  var added = false;
+
   if(uri.list)
   {
     if(!configurations.hasOwnProperty(uri.list)) {
       configurations[uri.list] = [];
     }
-    configurations[uri.list].push(data);
+
+    // Replace if object already exists
+    for(obj in configurations[uri.list]) {
+      if(configurations[uri.list][obj]["name"] == data.name) {
+	configurations[uri.list][obj] = data;
+	added = true;
+      }
+    }
+
+    // Add to end if it doesn't exist
+    if(!added) {
+      configurations[uri.list].push(data);
+    }
+
     updateFile();
   }
   res.write("Added: " + JSON.stringify(data));
 }
 
-function del(res, uri) {
+var del = function(res, uri) {
 
   if(uri.list) {
     if(uri.name) {
@@ -126,8 +131,7 @@ function del(res, uri) {
 	  break;
 	}
       }
-    }
-    else {
+    } else {
       delete configurations[uri.list];
       updateFile();
       res.write("Deleted " + uri.list + " configuration.");
@@ -135,18 +139,22 @@ function del(res, uri) {
   }
 }
 
-function parseURI(hrefParts) {
+var parseURI = function(hrefParts) {
   var uri = {};
 
   if(hrefParts.length > 0) {
     uri.method = hrefParts[0];
   }
+
   if(hrefParts.length > 1) {
     uri.list = hrefParts[1];
   }
+
   if(hrefParts.length > 2) {
     uri.name = hrefParts[2];
   }
 
   return uri;
 }
+
+exports.configs = configs;
