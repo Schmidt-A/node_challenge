@@ -5,7 +5,7 @@ crypto = require('crypto');
 fs = require('fs');
 
 usersFile = '../appdata/users.json';
-var sessions = [];
+var sessions = {};
 
 var hash = function(password, salt) {
   hashtxt = crypto.pbkdf2Sync(password, salt, 10000, 64);
@@ -60,13 +60,23 @@ var validateLogin = function(name, password) {
 };
 
 var attemptLogin = function(name, password) {
-  result = '';
+  var result = '';
+  var loggedIn = false;
 
   if(validateLogin(name, password)) {
-    var token = crypto.randomBytes(32).toString('hex');
-    sessions.push(token);
-    console.log(sessions);
-    result = token;
+    for(entry in sessions) {
+      if(entry == name) {
+	loggedIn = true;
+	result = sessions[entry];
+	break;
+      }
+    }
+
+    if(!loggedIn) {
+      var token = crypto.randomBytes(32).toString('hex');
+      sessions[name] = token;
+      result = token;
+    }
   } else {
     result = "failure";
   }
@@ -75,8 +85,10 @@ var attemptLogin = function(name, password) {
 };
 
 var authenticated = function(token) {                                              
-  if(sessions.indexOf(token) > -1) {                                          
-    return true;                                                              
+  for(entry in sessions) {
+    if(sessions.entry == token) {
+      return true;                                                              
+    }
   }
 
   return false;                                                               
