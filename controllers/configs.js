@@ -65,7 +65,7 @@ var get = function(res, uri, query) {
 
   if(query.only100k) {
     for(var conf in configurations) {
-      if(configurations[conf].length > 2) {
+      if(configurations[conf].length > 100000) {
 	result[conf] = configurations[conf];
       }
     }
