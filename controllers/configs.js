@@ -16,20 +16,19 @@ var configs = function(req, res) {
 
   hrefParts.shift();
   uri = parseURI(hrefParts);
-  console.log(global.logFile);
 
   parseRequest(query, req, function(token, data) {
     if(auth.authenticated(token))
     {
       if(req.method == 'GET') {
-	  get(res, uri, query);
+	get(res, uri, query);
       } else if(req.method == 'POST') {
 	post(res, uri, data);
       } else if(req.method == 'DELETE') {
 	del(res, uri);
       }
     } else {
-      console.log("NA");
+      global.logger.logErr('401: Unauthorized request');
       res.writeHead(401);
       res.write("401: Unauthorized request");
     }
@@ -75,6 +74,8 @@ var get = function(res, uri, query) {
       if(configurations.hasOwnProperty(uri.list)) {
 	result[uri.list] = configurations[uri.list];
       } else {
+	global.logger.logErr('404: ' + uri.list + 
+	    ' not found in configurations');
 	res.writeHead(404);
 	res.write("404: Not found");
 	return;
@@ -118,8 +119,10 @@ var post = function(res, uri, data) {
     }
 
     updateFile();
+    global.logger.log('Added ' + data.name + ' to ' + uri.list);
     res.write("Added: " + JSON.stringify(data));
   } else {
+    global.logger.logErr('404: could not add configuration data');
     res.writeHead(404);
     res.write("404: Not found");
   }
@@ -134,7 +137,9 @@ var del = function(res, uri) {
 	if(configurations[uri.list][i].name == uri.name) {
 	  configurations[uri.list].splice(i, 1);
 	  updateFile();
-	  res.write("Deleted " + uri.name + " from " + uri.list + " configuration.");
+	  res.write("Deleted " + uri.name + " from " + uri.list
+	      + " configuration.");
+	  global.logger.log('Deleted ' + uri.name + ' from ' + uri.list);
 	  deleted = true;
 	  break;
 	}
@@ -143,11 +148,13 @@ var del = function(res, uri) {
       delete configurations[uri.list];
       updateFile();
       res.write("Deleted " + uri.list + " configuration.");
+      global.logger.log('Deleted ' + uri.name);
       deleted = true;
     }
   }
 
   if(!deleted) {
+    global.logger.logErr('404: could not delete configuration data');
     res.writeHead(404);
     res.write("404: Not found");
   }

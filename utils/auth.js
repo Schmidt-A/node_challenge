@@ -9,14 +9,12 @@ var sessions = {};
 
 var hash = function(password, salt) {
   hashtxt = crypto.pbkdf2Sync(password, salt, 10000, 64);
-  console.log('hash: ' + hashtxt.toString('base64'));
   return hashtxt.toString('base64');
 };
 
 var save_user = function(entry) {
   users = require(usersFile);
   users[entry.username] = entry;
-  console.log('save entry: ' + JSON.stringify(entry));
 
   fs.writeFile(usersFile, JSON.stringify(users, null, 2), function(err) {
     if(err) {
@@ -32,8 +30,7 @@ var addUser = function(name, password) {
   try {
     var salt = crypto.randomBytes(128).toString('base64');
   } catch (ex) {
-    // handle error
-    console.log('randomBytes() error: ' + ex); 
+    console.log('randomBytes() error: ' + ex);
     return false;
   }
 
@@ -85,10 +82,8 @@ var attemptLogin = function(name, password) {
 };
 
 var authenticated = function(token) {                                              
-  console.log(sessions);
   for(entry in sessions) {
     if(sessions[entry] == token) {
-      console.log(entry);
       return true;                                                              
     }
   }
@@ -100,7 +95,6 @@ var attemptLogout = function(token) {
   for(entry in sessions) {
     if(sessions[entry] == token) {
       delete sessions[entry];
-      console.log(sessions);
       return true;
     }
   }

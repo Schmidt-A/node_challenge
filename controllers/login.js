@@ -15,11 +15,17 @@ var login = function(req, res) {
 
     req.on('end', function() {
       var postObj = qs.parse(postStr);
-      var result = auth.attemptLogin(postObj["user"], postObj["pass"]);
+      var result = auth.attemptLogin(postObj['user'], postObj['pass']);
       
       if(result == 'failure') {
+	global.logger.logErr('401: Failed login attempt with user/password ' +
+	  postObj['user'] + '/' + postObj['pass']);
+
 	res.writeHead(401);
+      } else {
+	global.logger.log('User ' + postObj['user'] + ' logged in');
       }
+
       res.write(result);
       res.end();
     });
@@ -28,15 +34,18 @@ var login = function(req, res) {
 
 var logout = function(req, res) {
   var token = (url.parse(req.url, true)).query.token;
+
   if(token) {
     if(auth.attemptLogout(token)) {
+      global.logger.log('Successful logout');
       res.write("Successfully logged out");
     } else {
+      global.logger.logErr('401: Failed login attempt');
       res.writeHead(401);
       res.write("401: Unauthorized Request");
     }
-    res.end();
   }
+  res.end();
 }
 
 exports.login = login;
