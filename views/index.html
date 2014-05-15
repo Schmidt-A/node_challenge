@@ -33,6 +33,9 @@
     }
 
     var statusCodeHandlers = {
+      400: function() {
+	$('#server_msgs').html("400: Bad Request")	
+      },
       401: function() {
 	$('#server_msgs').html("401: Unauthorized request")	
       },

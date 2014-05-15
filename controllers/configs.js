@@ -99,6 +99,12 @@ var get = function(res, uri, query) {
 var post = function(res, uri, data) {
   var added = false;
 
+  if(!validateData(data)) {
+    res.writeHead(400);
+    res.write("400: Bad Request");
+    return;
+  }
+
   if(uri.list)
   {
     if(!configurations.hasOwnProperty(uri.list)) {
@@ -176,6 +182,43 @@ var parseURI = function(hrefParts) {
   }
 
   return uri;
+}
+
+var validateData = function(data) {
+  names = {
+    'name': 'string',
+    'hostname': 'string',
+    'port': 'number',
+    'username': 'string'
+  };
+
+  // Make sure we don't have bogus field names
+  for(property in data) {
+    if(!names.hasOwnProperty(property)) {
+      return false;
+    }
+  }
+
+  for(property in names) {
+    if(!data.hasOwnProperty(property)) {
+      return false;
+    }
+
+    if(data[property].length < 1) {
+      return false;
+    }
+
+    // Make sure port is actually a number. Store it as an int.
+    if(property == 'port' && !isNaN(data['port'])) {
+      data['port'] = parseInt(data['port'], 10);
+    }
+
+    if(typeof data[property] != names[property]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 exports.configs = configs;
