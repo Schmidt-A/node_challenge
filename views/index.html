@@ -130,12 +130,21 @@
       });
 
       $('#logout').click(function() {
-	var u = '/configs';
-	var params = {
-	  'token': token,
-	  'logout': 'true'
-	};
-      )}
+	var u = '/logout';
+	var params = {'token': token};
+
+	$.ajax({
+	  url: u,
+	  type: 'GET',
+	  data: params,
+	  statusCode: statusCodeHandlers,
+	  success: function(result) {
+	    token = '';
+	    $('#main').hide();  
+	    $('#login_div').show();
+	  }
+	});
+      });
 
       $('p').click(function() {
 	if($(this).hasClass('default')) {

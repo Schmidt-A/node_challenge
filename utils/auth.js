@@ -88,6 +88,7 @@ var authenticated = function(token) {
   console.log(sessions);
   for(entry in sessions) {
     if(sessions[entry] == token) {
+      console.log(entry);
       return true;                                                              
     }
   }
@@ -95,6 +96,18 @@ var authenticated = function(token) {
   return false;                                                               
 }
 
+var attemptLogout = function(token) {
+  for(entry in sessions) {
+    if(sessions[entry] == token) {
+      delete sessions[entry];
+      console.log(sessions);
+      return true;
+    }
+  }
+  return false;
+}
+
 exports.addUser = addUser;
 exports.attemptLogin = attemptLogin;
+exports.attemptLogout = attemptLogout;
 exports.authenticated = authenticated;

@@ -10,6 +10,8 @@ var listener = function(req, res) {
     login.login(req, res); 
   } else if(req.url.match(/^\/configs/)) {
     configs.configs(req, res);
+  } else if (req.url.match(/^\/logout/)) {
+    login.logout(req, res);
   } else {
     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
     res.write(fs.readFileSync('./views/index.html'));
