@@ -1,8 +1,8 @@
-var https = require('https');
 var fs = require('fs');
+var https = require('https');
 
-var routes = require('./routes');
 var log = require('./utils/log');
+var routes = require('./routes');
 
 // self signed cert, NOT a production quality ssl setup
 var options = {

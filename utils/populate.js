@@ -1,11 +1,11 @@
 /*
-populate the configs.json file with lots of entries
+  populate the configs.json file with lots of entries
 */
 
 var fs = require('fs');
 
-var lists = ['one', 'two', 'three', 'four'];
 var configs = {};
+var lists = ['one', 'two', 'three', 'four'];
 
 function rnd_string() {
   // grabbed from http://stackoverflow.com/questions/1349404/generate-a-string-of-5-random-characters-in-javascript/8084248#8084248

@@ -1,17 +1,12 @@
 {
   "test": {
     "username": "test",
-    "hash": "LAZ5MeiN5aFKUQhZNI8EGDH5JltbKMuEWeNn2pQlkNOdD6ZHiYGVsNKNQeqnTC1+zdqugSgxRDTlygmxikjzTg==",
-    "salt": "L1ER3P2WcxjPzI++Q7qwIUuyAnB+MNoyQ1+oLDYZ9otvM9J1gA0aEI42agHAoVTRpXxx4UAA1CLbyXuLHUiLpmORwEuJzeFlY43BvWFO8ZtMtxzFS5QJhbLuOZNSBdMefiunQFxix9wUbI6TlYRHUdq+1eJETT8f4y42+mn3vAc="
+    "hash": "j5IPxwNA9xeuApokUknt67qJrZjAB/Mxut8hOdAvoikWW/ZAs4kC7esVfFdnyUWWEOFqtEpJC7yIF07Q2y+5rQ==",
+    "salt": "tHbzJoVXzQ63e1hOIXe/ep0N6Ppq96PJkOwsFhzd77ZwNVH5RnBq6qfjGf8IUzhJzZlycNZy1ncOfVVg3XPq2YIlobMtk5EZsm2JT8cwSi9HyyPwm4NloVmdZ8KvRvoQLJ4IwPy3ioxxUxyrioCiTaSgvkU/edx5S/x7/gqiS0Q="
   },
-  "u": {
-    "username": "u",
-    "hash": "jfLptDso+jl+01KAyqXxfJRmgvQr2Zn1d1tlC8Owd8RxhlvnoVYUG87O9u1nMhrNMSvZrwBEnfbBrTCRa8ndog==",
-    "salt": "gI2unAd54t8ktuOtoFOQNAK2Lx9UAwklkvQX7PvFVPUWDaYcMvSG/bno83fxc9ACjlo4tKtNQj72BaK6ZrAvZvyOPcP4gfsZ4oUWKNo6/hK+PslLDywNR1y7wk2Ona189l5GdZNW4EMDVOhPJNUVmF9iH7A9T7SX0CjhwyOsAks="
-  },
-  "u2": {
-    "username": "u2",
-    "hash": "Z7N3XPKBKl9jtgEdf5HCnzlT88ySXKtExxmGc2TPRX2xvfb9rsiWUW44NMnr84fuEXU+BNclURaEPGQARFGXyQ==",
-    "salt": "vEtQIhbqZLM8eI1ln7+efuZBRCDVz/AvQTWvT8+z0RvSwlbPOvyEeElm8FWe9hFvV7krpPqOnOcUgimyhMaPp5VlpFmuA6uT0tlDeIrQdRjAtYf+gf2/86gB0musqkpLDRjBI9kJ1i6+1VKLaxfpMJ6ikhztUi4Kf+Hgq6vvscY="
+  "hireme": {
+    "username": "hireme",
+    "hash": "xyRjgFhcQd+VFbIZY/tYXqc0R00YCGpFOgmNMixNXe6nXau4nVBIycoHyiRb4y6nr6NZ2c+HoZ3/8huOje2heQ==",
+    "salt": "53plcjy01p3eYIhodLCcQV0+9qbcYDGSEsJqQb1XU4E7B01HAmtH5og1PQ6VuHAPlTCpezYGn8OKyp65DpOBP2s/tFEs3HIwxJU2XA/C1+QdflW16QbRPFyBdeNUDQh4QbYN7ZDTR2SA4FBD6vXB/cFFJJl7+ZpHKD4cECFJYBA="
   }
 }

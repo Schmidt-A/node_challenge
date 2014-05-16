@@ -1,5 +1,12 @@
-var qs = require('querystring');
+/*
+   Controller which handles high-level login/logout logic.
+   Authentication goodness happens in utils/auth.js.
+
+   Exports: login, logout
+*/
+
 var crypto = require('crypto');
+var qs = require('querystring');
 var url = require('url');
 
 var auth = require('../utils/auth');
@@ -16,7 +23,7 @@ var login = function(req, res) {
     req.on('end', function() {
       var postObj = qs.parse(postStr);
       var result = auth.attemptLogin(postObj['user'], postObj['pass']);
-      
+
       if(result == 'failure') {
 	global.logger.logErr('401: Failed login attempt with user/password ' +
 	  postObj['user'] + '/' + postObj['pass']);

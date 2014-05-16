@@ -1,10 +1,17 @@
-var url = require('url');
-var qs = require('querystring');
+/*
+   This controller handles all configuration manipulation.
+
+   Exports: configs
+*/
+
 var fs = require('fs');
+var qs = require('querystring');
+var url = require('url');
 
 var auth = require('../utils/auth');
 var flexsort = require('../utils/flexsort');
-var configurations = require('../appdata/configs.json');
+
+var configurations;
 
 var configs = function(req, res) {
   configurations = require('../appdata/configs.json');
@@ -14,6 +21,7 @@ var configs = function(req, res) {
   var query = urlParts.query;
   var hrefParts = urlParts.pathname.split("/");
 
+  // Get rid of the first entry because it's always blank
   hrefParts.shift();
   uri = parseURI(hrefParts);
 
@@ -36,30 +44,6 @@ var configs = function(req, res) {
   });
 }
 
-var parseRequest = function(query, req, fn) {
-  if(req.method == 'GET') {
-    fn(query.token, null);
-  } else {
-    var formData = '';
-    req.on('data', function(data) {
-      formData += data;
-    });
-    req.on('end', function() {
-      var data = qs.parse(formData);
-      var token = data.token;
-      delete data.token;
-
-      fn(token, data);
-    });
-  }
-}
-
-var updateFile = function()
-{
-  fs.writeFile('./appdata/configs.json',
-		JSON.stringify(configurations, null, 4));
-}
-
 var get = function(res, uri, query) {
   var result = {};
 
@@ -74,7 +58,7 @@ var get = function(res, uri, query) {
       if(configurations.hasOwnProperty(uri.list)) {
 	result[uri.list] = configurations[uri.list];
       } else {
-	global.logger.logErr('404: ' + uri.list + 
+	global.logger.logErr('404: ' + uri.list +
 	    ' not found in configurations');
 	res.writeHead(404);
 	res.write("404: Not found");
@@ -88,7 +72,7 @@ var get = function(res, uri, query) {
   if(query.sortArgs) {
     for(key in result) {
       result[key] = result[key]
-	.sort(flexsort.sort_by.apply(this, (query.sortArgs).split(',')));
+	.sort(flexsort.sortBy.apply(this, (query.sortArgs).split(',')));
     }
   }
 
@@ -139,6 +123,7 @@ var del = function(res, uri) {
 
   if(uri.list) {
     if(uri.name) {
+      // Attempt to delete single entry from configuration
       for(var i in configurations[uri.list]) {
 	if(configurations[uri.list][i].name == uri.name) {
 	  configurations[uri.list].splice(i, 1);
@@ -151,6 +136,7 @@ var del = function(res, uri) {
 	}
       }
     } else {
+      // Otherwise delete entire configuration
       delete configurations[uri.list];
       updateFile();
       res.write("Deleted " + uri.list + " configuration.");
@@ -182,6 +168,24 @@ var parseURI = function(hrefParts) {
   }
 
   return uri;
+}
+
+var parseRequest = function(query, req, fn) {
+  if(req.method == 'GET') {
+    fn(query.token, null);
+  } else {
+    var formData = '';
+    req.on('data', function(data) {
+      formData += data;
+    });
+    req.on('end', function() {
+      var data = qs.parse(formData);
+      var token = data.token;
+      delete data.token;
+
+      fn(token, data);
+    });
+  }
 }
 
 var validateData = function(data) {
@@ -219,6 +223,12 @@ var validateData = function(data) {
   }
 
   return true;
+}
+
+var updateFile = function()
+{
+  fs.writeFile('./appdata/configs.json',
+		JSON.stringify(configurations, null, 4));
 }
 
 exports.configs = configs;

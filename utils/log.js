@@ -1,3 +1,9 @@
+/*
+  A simple logging object. In a production server we'd probably want to
+  use syslog or something equally/more robust.
+
+  Exports: Logger
+*/
 var fs = require('fs');
 
 var Logger = function(level) {

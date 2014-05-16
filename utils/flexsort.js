@@ -1,47 +1,45 @@
-// Taken from:
-// http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
+/*
+  Taken from:
+  http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
+*/
 
-module.exports = {
-  sort_by: function() {
-    var fields = [],
-      n_fields = arguments.length,
-      field, name, reverse, cmp;
+var sortBy = function() {
+  var fields = [],
+    n_fields = arguments.length,
+    field, name, reverse, cmp;
 
-    // preprocess sorting options
+  // preprocess sorting options
+  for (var i = 0; i < n_fields; i++) {
+    field = arguments[i];
+    if (typeof field === 'string') {
+      name = field;
+      cmp = default_cmp;
+    } else {
+      name = field.name;
+      cmp = getCmpFunc(field.primer, field.reverse);
+    }
+
+    fields.push({
+      name: name,
+      cmp: cmp
+    });
+  }
+
+  // final comparison function
+  return function(A, B) {
+    var a, b, name, result;
+
     for (var i = 0; i < n_fields; i++) {
-      field = arguments[i];
-      if (typeof field === 'string') {
-	name = field;
-	cmp = default_cmp;
-      } else {
-	name = field.name;
-	cmp = getCmpFunc(field.primer, field.reverse);
-      }
+      result = 0;
+      field = fields[i];
+      name = field.name;
 
-      fields.push({
-	name: name,
-	cmp: cmp
-      });
+      result = field.cmp(A[name], B[name]);
+      if (result !== 0) break;
     }
-
-    // final comparison function
-    return function(A, B) {
-      var a, b, name, result;
-
-      for (var i = 0; i < n_fields; i++) {
-	result = 0;
-	field = fields[i];
-	name = field.name;
-
-	result = field.cmp(A[name], B[name]);
-	if (result !== 0) break;
-      }
-      return result;
-    }
+    return result;
   }
 }
-
-// utility functions
 
 function default_cmp(a, b) {
   if (a == b) return 0;
@@ -63,3 +61,5 @@ function getCmpFunc(primer, reverse) {
   }
   return cmp;
 }
+
+exports.sortBy = sortBy;
